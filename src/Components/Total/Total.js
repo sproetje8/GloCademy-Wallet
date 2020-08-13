@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SectionTotal = () => {
+const Total = () => {
 	return (
 		<section className="total">
 			<header className="total__header">
@@ -21,4 +21,4 @@ const SectionTotal = () => {
 	);
 };
 
-export default SectionTotal;
+export default Total;
