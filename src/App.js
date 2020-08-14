@@ -5,14 +5,14 @@ import History from './Components/History/History';
 import Operation from './Components/Operation/Operation';
 
 class App extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			transactions: [],
-			description: '',
-			amount: '',
-		};
-	}
+	state = {
+		transactions: [],
+		description: '',
+		amount: '',
+		income: 0,
+		expenses: 0,
+		balance: 0,
+	};
 
 	addTransaction = (add) => {
 		const transactions = [
@@ -20,16 +20,17 @@ class App extends Component {
 			{
 				id: `cmr${(+new Date()).toString(16)}`,
 				description: this.state.description,
-				amount: this.state.amount,
+				amount: +this.state.amount,
 				add,
 			},
 		];
 
-		this.setState({
-			transactions,
-			description: '',
-			amount: '',
-		});
+		this.setState(
+			{ transactions },
+			add
+				? this.setIncome(this.state.amount)
+				: this.setExpenses(this.state.amount)
+		);
 	};
 
 	addAmount = (e) => {
@@ -40,13 +41,48 @@ class App extends Component {
 		this.setState({ description: e.target.value });
 	};
 
+	calcBalance = () => {
+		const diff = this.state.income - this.state.expenses;
+
+		this.setState(
+			{
+				balance: diff,
+				description: '',
+				amount: '',
+			},
+			() => console.log(this.state)
+		);
+	};
+
+	setIncome = (amount) => {
+		this.setState(
+			(state) => ({
+				income: state.income + +amount,
+			}),
+			() => this.calcBalance()
+		);
+	};
+
+	setExpenses = (amount) => {
+		this.setState(
+			(state) => ({
+				expenses: state.expenses + +amount,
+			}),
+			() => this.calcBalance()
+		);
+	};
+
 	render() {
 		return (
 			<>
 				<Header />
 				<main>
 					<div className="container">
-						<Total />
+						<Total
+							balance={this.state.balance}
+							income={this.state.income}
+							expenses={this.state.expenses}
+						/>
 						<History transactions={this.state.transactions} />
 						<Operation
 							addTransaction={this.addTransaction}
