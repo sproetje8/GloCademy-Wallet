@@ -77,14 +77,11 @@ class App extends Component {
 	calcBalance = () => {
 		const diff = this.state.income - this.state.expenses;
 
-		this.setState(
-			{
-				balance: diff,
-				description: '',
-				amount: '',
-			},
-			() => console.log(this.state)
-		);
+		this.setState({
+			balance: diff,
+			description: '',
+			amount: '',
+		});
 	};
 
 	setIncome = (amount) => {
