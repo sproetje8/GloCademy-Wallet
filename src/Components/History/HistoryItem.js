@@ -1,6 +1,10 @@
 import React from 'react';
 
-const HistoryItem = ({ transaction }) => {
+const HistoryItem = ({ transaction, delTransaction }) => {
+	const onClick = () => {
+		delTransaction(transaction);
+	};
+
 	return (
 		<li
 			className={`history__item ${
@@ -11,7 +15,9 @@ const HistoryItem = ({ transaction }) => {
 			<span className="history__money">
 				{`${transaction.add ? '+' : '-'}${transaction.amount}`} ₽
 			</span>
-			<button className="history__delete">x</button>
+			<button className="history__delete" onClick={onClick}>
+				x
+			</button>
 		</li>
 	);
 };

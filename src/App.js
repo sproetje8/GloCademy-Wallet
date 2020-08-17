@@ -30,21 +30,30 @@ class App extends Component {
 			},
 		];
 
+		this.setState((state) => {
+			return {
+				transactions,
+				historyItemCounter: state.historyItemCounter + 1,
+			};
+		});
+	};
+
+	delTransaction = (transaction) => {
+		const { amount, add } = transaction;
+
 		this.setState(
 			(state) => {
 				return {
-					transactions,
-					historyItemCounter: state.historyItemCounter + 1,
+					transactions: state.transactions.filter(
+						(elem) => elem !== transaction
+					),
 				};
 			},
-			() => console.log(this.state)
+			() => {
+				add ? this.setIncome(-amount) : this.setExpenses(-amount);
+			}
 		);
 	};
-
-	// delTransaction = (id) => {
-	// 	const transaction = this.state.transactions.find((elem) => elem.id === id);
-	// 	console.log(transaction);
-	// };
 
 	addAmount = (e) => {
 		this.setState({ amount: e.target.value });
@@ -57,11 +66,14 @@ class App extends Component {
 	calcBalance = () => {
 		const diff = this.state.income - this.state.expenses;
 
-		this.setState({
-			balance: diff,
-			description: '',
-			amount: '',
-		});
+		this.setState(
+			{
+				balance: diff,
+				description: '',
+				amount: '',
+			},
+			() => console.log(this.state)
+		);
 	};
 
 	setIncome = (amount) => {
