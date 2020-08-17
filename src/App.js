@@ -6,6 +6,7 @@ import Operation from './Components/Operation/Operation';
 
 class App extends Component {
 	state = {
+		historyItemCounter: 0,
 		transactions: [],
 		description: '',
 		amount: '',
@@ -15,10 +16,14 @@ class App extends Component {
 	};
 
 	addTransaction = (add) => {
+		add
+			? this.setIncome(this.state.amount)
+			: this.setExpenses(this.state.amount);
+
 		const transactions = [
 			...this.state.transactions,
 			{
-				id: `cmr${(+new Date()).toString(16)}`,
+				id: this.state.historyItemCounter,
 				description: this.state.description,
 				amount: +this.state.amount,
 				add,
@@ -26,12 +31,20 @@ class App extends Component {
 		];
 
 		this.setState(
-			{ transactions },
-			add
-				? this.setIncome(this.state.amount)
-				: this.setExpenses(this.state.amount)
+			(state) => {
+				return {
+					transactions,
+					historyItemCounter: state.historyItemCounter + 1,
+				};
+			},
+			() => console.log(this.state)
 		);
 	};
+
+	// delTransaction = (id) => {
+	// 	const transaction = this.state.transactions.find((elem) => elem.id === id);
+	// 	console.log(transaction);
+	// };
 
 	addAmount = (e) => {
 		this.setState({ amount: e.target.value });
@@ -44,14 +57,11 @@ class App extends Component {
 	calcBalance = () => {
 		const diff = this.state.income - this.state.expenses;
 
-		this.setState(
-			{
-				balance: diff,
-				description: '',
-				amount: '',
-			},
-			() => console.log(this.state)
-		);
+		this.setState({
+			balance: diff,
+			description: '',
+			amount: '',
+		});
 	};
 
 	setIncome = (amount) => {
@@ -83,7 +93,10 @@ class App extends Component {
 							income={this.state.income}
 							expenses={this.state.expenses}
 						/>
-						<History transactions={this.state.transactions} />
+						<History
+							transactions={this.state.transactions}
+							delTransaction={this.delTransaction}
+						/>
 						<Operation
 							addTransaction={this.addTransaction}
 							addAmount={this.addAmount}
