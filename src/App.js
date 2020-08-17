@@ -5,15 +5,20 @@ import History from './Components/History/History';
 import Operation from './Components/Operation/Operation';
 
 class App extends Component {
-	state = {
-		historyItemCounter: 0,
-		transactions: [],
-		description: '',
-		amount: '',
-		income: 0,
-		expenses: 0,
-		balance: 0,
-	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			historyItemCounter: 0,
+			transactions: [],
+			description: '',
+			amount: '',
+			income: 0,
+			expenses: 0,
+			balance: 0,
+		};
+
+		this.updateStorage = this.updateStorage.bind(this);
+	}
 
 	addTransaction = (add) => {
 		add
@@ -30,12 +35,17 @@ class App extends Component {
 			},
 		];
 
-		this.setState((state) => {
-			return {
-				transactions,
-				historyItemCounter: state.historyItemCounter + 1,
-			};
-		});
+		this.setState(
+			(state) => {
+				return {
+					transactions,
+					historyItemCounter: state.historyItemCounter + 1,
+				};
+			},
+			() => {
+				this.updateStorage();
+			}
+		);
 	};
 
 	delTransaction = (transaction) => {
@@ -51,6 +61,7 @@ class App extends Component {
 			},
 			() => {
 				add ? this.setIncome(-amount) : this.setExpenses(-amount);
+				this.updateStorage();
 			}
 		);
 	};
@@ -92,6 +103,11 @@ class App extends Component {
 			}),
 			() => this.calcBalance()
 		);
+	};
+
+	updateStorage = () => {
+		localStorage.clear();
+		localStorage.setItem('calcMoney', JSON.stringify(this.state.transactions));
 	};
 
 	render() {
